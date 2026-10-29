@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>J/CHH: Jasmin, UI/UX Designer, Web Developer & AI Builder</title>
+  <meta name="description" content="Jasmin is a UI/UX designer, web developer and AI builder. Selected work from 2026: NovaSuite, NO ME and Belleviata.">
+  <meta name="theme-color" content="#FAF6EF">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="J/CHH">
+  <meta property="og:description" content="UI/UX designer, web developer & AI builder.">
+  <!-- Replace with your absolute production URL once deployed, e.g. https://jchh.com/assets/og.jpg -->
+  <meta property="og:image" content="/assets/og.jpg">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <script>
+    // Runs before first paint: marks JS as available, picks the theme, and starts with the big logo.
+    (function () {
+      var r = document.documentElement;
+      r.classList.add('js', 'logo-big', 'intro-lock');
+      var t = null;
+      try { t = localStorage.getItem('jchh-theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') {
+        t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      r.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip" href="#work">Skip to content</a>
+
+  <!-- Fixed logo: white + mix-blend-mode:difference, so it reads on cream, dark and image backgrounds -->
+  <a class="logo" href="/" data-link data-section-link="work" aria-label="J/CHH home"><span class="logo-text" aria-hidden="true"></span></a>
+
+  <header class="site-header">
+    <div class="header-nav">
+      <nav class="nav" aria-label="Main">
+        <a href="/" data-link data-section-link="work" data-i18n="nav.work">Work</a><span class="sep">,</span>
+        <a href="/about" data-link data-section-link="about" data-i18n="nav.about">About</a><span class="sep">,</span>
+        <a href="/contact" data-link data-section-link="contact" data-i18n="nav.contact">Contact</a>
+      </nav>
+      <p class="tagline" data-i18n="tagline">/ UI/UX Designer, Web Developer &amp; AI Builder</p>
+    </div>
+    <div class="header-tools">
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="en" aria-pressed="true">En</button><span class="sep">,</span>
+        <button type="button" data-lang="fr" aria-pressed="false">Fr</button><span class="sep">,</span>
+        <button type="button" data-lang="de" aria-pressed="false">De</button>
+      </div>
+      <button type="button" class="theme-toggle" id="theme-toggle">Dark</button>
+    </div>
+  </header>
+
+  <!-- Desktop right column: follows the project in view, services pinned to the bottom -->
+  <aside class="rail" aria-hidden="false">
+    <div class="rail-info" id="rail-info">
+      <p class="mask"><span id="info-index">01 / 2026</span></p>
+      <p class="mask"><span id="info-title">NovaSuite&nbsp;&nbsp;/ 2026</span></p>
+    </div>
+    <div class="rail-services">
+      <h2 class="label-h" data-i18n="services">/ Services</h2>
+      <ul class="services" id="rail-services"></ul>
+    </div>
+  </aside>
+
+  <main>
+    <section class="work" id="work" data-section="work">
+      <p class="list-label"><span data-i18n="list">List</span><span class="list-sub" data-i18n="selected">Selected work — 2026</span></p>
+      <div class="cards">
+        <a class="card" href="/project/novasuite" data-link data-slug="novasuite" style="--card-bg:#1E1E1E" aria-label="NovaSuite, 01 / 2026">
+          <img src="/assets/img/novasuite-hero.webp" width="1800" height="968" alt="NovaSuite homepage: a warm stone living room with the NovaSuite wordmark" fetchpriority="high">
+        </a>
+        <a class="card" href="/project/no-me" data-link data-slug="no-me" style="--card-bg:#111111" aria-label="NO ME, 02 / 2026">
+          <img src="/assets/img/nome-clover.webp" width="1800" height="968" alt="NO ME homepage with a green clover stool between the wide letters NO and ME" loading="lazy">
+        </a>
+        <a class="card" href="/project/belleviata" data-link data-slug="belleviata" style="--card-bg:#382117" aria-label="Belleviata, 03 / 2026">
+          <img src="/assets/img/belleviata-hero.webp" width="1635" height="1181" alt="Belleviata homepage: a yoga pose in warm light with community statistics" loading="lazy">
+        </a>
+      </div>
+      <!-- Mobile only: the rail is hidden below 900px, so services sit in the flow -->
+      <div class="services-inline">
+        <h2 class="label-h" data-i18n="services">/ Services</h2>
+        <ul class="services" id="inline-services"></ul>
+      </div>
+    </section>
+
+    <section class="about" id="about" data-section="about">
+      <div class="about-text">
+        <h2 class="label-h" data-i18n="about.title">/ About me</h2>
+        <p data-i18n="about.p1">I’m Jasmin, a designer and developer working at the intersection of thoughtful design and digital experiences.</p>
+        <p data-i18n="about.p2">I build considered websites and identities for people with a point of view. From the first idea to the final detail, I believe the best work feels as good as it functions.</p>
+        <div class="awards">
+          <h2 class="label-h" data-i18n="awards.title">/ Awards</h2>
+          <p data-i18n="awards.1">1 × Site of the day (Awwwards)</p>
+          <p data-i18n="awards.2">2 × Honorable Mention (CSSDA)</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" data-section="contact">
+      <div class="contact-cta">
+        <p data-i18n="contact.cta">Got a project in mind? Let’s create something beautiful together.</p>
+        <a class="u" href="mailto:hello@jchh.com">hello@jchh.com</a>
+      </div>
+      <p class="socials">
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a><span class="sep">,</span>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a><span class="sep">,</span>
+        <a href="https://x.com/" target="_blank" rel="noopener">X</a>
+      </p>
+      <p class="copy">© 2026 J/CHH</p>
+    </section>
+  </main>
+
+  <!-- Project overlay: gallery left, details right. URL becomes /project/<slug> -->
+  <div class="project" id="project" role="dialog" aria-modal="true" aria-labelledby="project-title" aria-hidden="true">
+    <div class="project-gallery" id="project-gallery" tabindex="-1"></div>
+    <div class="project-rail">
+      <div class="project-head">
+        <h1 id="project-title" class="project-title"></h1>
+        <p class="project-desc" id="project-desc"></p>
+        <p><a class="u" id="project-visit" href="#" target="_blank" rel="noopener" hidden></a></p>
+      </div>
+      <div class="rail-services">
+        <h2 class="label-h" data-i18n="services">/ Services</h2>
+        <ul class="services" id="project-services"></ul>
+      </div>
+    </div>
+    <button type="button" class="project-close" id="project-close">Close</button>
+  </div>
+
+  <div class="cursor" id="cursor" aria-hidden="true">/ View</div>
+
+  <noscript><style>.rail,.cursor{display:none}</style></noscript>
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

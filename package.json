@@ -1,0 +1,10 @@
+{
+  "name": "jchh-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "J/CHH portfolio: static site, no build step.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js"
+  }
+}
