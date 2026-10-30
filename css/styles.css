@@ -291,15 +291,12 @@ html[data-section="contact"] .rail-services {
 .services li:not(:last-child)::after { content: ","; }
 .services li.off { color: var(--muted); }
 
-/* -------------------------------------------------------------------------
-   Work (project list)
-   ------------------------------------------------------------------------- */
 
-main { display: block; }
-
+/* Work (project list) */
 .work {
   padding: 0 0 0 var(--gutter);
   width: calc(var(--left-w) + var(--gutter));
+  overflow: visible;
 }
 
 .list-label {
@@ -308,46 +305,61 @@ main { display: block; }
   color: var(--muted);
 }
 
-.list-sub::before {
-  content: "—";
-  margin: 0 .5em 0 .8em;
+.cards {
+  display: block;
+  overflow: visible;
 }
 
-.list-sub:empty::before { content: none; }
-
-.cards { display: block; }
-
+/* Scroll-driven project stack */
 .card {
+  position: sticky;
+  top: clamp(76px, 10vh, 110px);
   display: block;
   background: var(--card-bg);
   padding: clamp(8px, 1.25vw, 18px);
   overflow: hidden;
 }
 
-.card + .card { margin-top: clamp(14px, 2vw, 28px); }
+.card:nth-child(1) {
+  z-index: 1;
+}
+
+.card:nth-child(2) {
+  z-index: 2;
+}
+
+.card:nth-child(3) {
+  z-index: 3;
+}
+
+.card + .card {
+  margin-top: clamp(14px, 2vw, 28px);
+}
 
 .card img {
   display: block;
   width: 100%;
   height: auto;
-  transition: transform 1s var(--ease-out), filter .8s ease;
+  transition:
+    transform 1s cubic-bezier(.2, .7, .2, 1),
+    filter 1s cubic-bezier(.2, .7, .2, 1);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .card:hover img,
-  .card:focus-visible img {
-    transform: scale(1.02);
-    filter: brightness(.94);
+/* Keep the mobile project list in normal document flow */
+@media (max-width: 900px) {
+  .work {
+    width: 100%;
+    padding: 0 var(--gutter);
+  }
+
+  .card {
+    position: relative;
+    top: auto;
+    z-index: auto;
   }
 }
 
-.card:focus-visible {
-  outline: 2px solid var(--fg);
-  outline-offset: -2px;
-}
 
-.card.is-active { --active-card: 1; }
-.services-inline { display: none; }
 
 /* -------------------------------------------------------------------------
    About
