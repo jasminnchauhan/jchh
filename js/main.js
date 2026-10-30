@@ -1,3 +1,4 @@
+
 import { LANGS, SERVICES, projects, dict } from './data.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -8,8 +9,14 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const store = {
-  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
+  get(k) {
+    try { return localStorage.getItem(k); }
+    catch { return null; }
+  },
+  set(k, v) {
+    try { localStorage.setItem(k, v); }
+    catch { /* storage unavailable */ }
+  },
 };
 
 /* ---------------------------------------------------------------- state */
@@ -19,16 +26,26 @@ let currentSection = 'work';
 let activeSlug = projects[0].slug;
 let openSlug = null;
 
-const sections = { work: $('#work'), about: $('#about'), contact: $('#contact') };
+const sections = {
+  work: $('#work'),
+  about: $('#about'),
+  contact: $('#contact')
+};
+
 const bySlug = Object.fromEntries(projects.map((p) => [p.slug, p]));
 const t = (key) => dict[lang][key] ?? dict.en[key] ?? key;
 
 /* ---------------------------------------------------------------- routing helpers */
 function parse(path) {
   const p = path.replace(/\/+$/, '') || '/';
-  if (p.startsWith('/project/')) return { type: 'project', slug: p.split('/')[2] };
+
+  if (p.startsWith('/project/')) {
+    return { type: 'project', slug: p.split('/')[2] };
+  }
+
   if (p === '/about') return { type: 'section', id: 'about' };
   if (p === '/contact') return { type: 'section', id: 'contact' };
+
   return { type: 'section', id: 'work' };
 }
 
@@ -59,7 +76,9 @@ function renderServices(ul, active) {
       li.dataset.s = key;
       li.textContent = t(`svc.${key}`);
 
-      if (active && !active.includes(key)) li.classList.add('off');
+      if (active && !active.includes(key)) {
+        li.classList.add('off');
+      }
 
       return li;
     })
@@ -129,7 +148,6 @@ let infoTimer;
 function setInfo(p, { animate = true } = {}) {
   const i = projects.indexOf(p);
 
-  // Keep the project number separate; show the year only beside the project name.
   const idx = pad(i + 1);
   const title = `${p.name} / ${p.year}`;
 
@@ -192,6 +210,7 @@ function cardInView() {
   const line = window.innerHeight * 0.5;
   let activeCard = null;
 
+  // Later cards appear above earlier cards in the sticky stack.
   for (const card of cards) {
     const rect = card.getBoundingClientRect();
 
@@ -209,6 +228,7 @@ function cardInView() {
 
   for (const card of cards) {
     const rect = card.getBoundingClientRect();
+
     const distance = Math.abs(
       (rect.top + rect.bottom) / 2 - line
     );
@@ -220,9 +240,6 @@ function cardInView() {
   }
 
   return closestCard ? closestCard.dataset.slug : null;
-}
-
-  return best.dataset.slug;
 }
 
 function updateTitle() {
