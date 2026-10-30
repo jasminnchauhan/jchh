@@ -169,7 +169,6 @@ main { display: block; }
 .list-label { padding-top: calc(var(--gutter) * 6.6); padding-bottom: .55em; color: var(--muted); }
 .list-sub::before { content: "—"; margin: 0 .5em 0 .8em; }
 .list-sub:empty::before { content: none; }
-.cards { display: block; }
 
 .card {
   display: block;
