@@ -10,6 +10,7 @@
   --bg: #FAF6EF;
   --fg: #0B0B0A;
   --muted: #9A968E;
+   --card-bg: #EAE5DC;
 
   --font: "Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --fs: clamp(16px, 1.25vw, 30px);          /* the one text size; hierarchy comes from colour + position */
@@ -39,6 +40,7 @@
   --bg: #0F0E0D;
   --fg: #F3EEE6;
   --muted: #6F6B65;
+   --card-bg: #1A1917;
   color-scheme: dark;
 }
 
