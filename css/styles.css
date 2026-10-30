@@ -166,11 +166,38 @@ html[data-section="contact"] .rail-services { opacity: 0; transform: translateY(
 /* -------------------------------------------------------------------------
    Work (project list)
    ------------------------------------------------------------------------- */
-main { display: block; }
-.work { padding: 0 0 0 var(--gutter); width: calc(var(--left-w) + var(--gutter)); }
-.list-label { padding-top: calc(var(--gutter) * 6.6); padding-bottom: .55em; color: var(--muted); }
-.list-sub::before { content: "—"; margin: 0 .5em 0 .8em; }
-.list-sub:empty::before { content: none; }
+
+/* -------------------------------------------------------------------------
+   Work (project list)
+   ------------------------------------------------------------------------- */
+main {
+  display: block;
+}
+
+.work {
+  padding: 0 0 0 var(--gutter);
+  width: calc(var(--left-w) + var(--gutter));
+}
+
+.list-label {
+  padding-top: calc(var(--gutter) * 6.6);
+  padding-bottom: .55em;
+  color: var(--muted);
+}
+
+.list-sub::before {
+  content: "—";
+  margin: 0 .5em 0 .8em;
+}
+
+.list-sub:empty::before {
+  content: none;
+}
+
+/* Project cards */
+.cards {
+  display: block;
+}
 
 .card {
   display: block;
@@ -180,24 +207,6 @@ main { display: block; }
   opacity: 0;
   transform: translateY(20px);
   animation: card-enter .8s cubic-bezier(.22, 1, .36, 1) forwards;
-}
-
-.card img {
-  display: block;
-  width: 100%;
-  height: auto;
-  transition: transform 1s cubic-bezier(.22, 1, .36, 1);
-}
-
-.card + .card {
-  margin-top: clamp(14px, 2vw, 28px);
-}
-
-@keyframes card-enter {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .card:nth-child(2) {
@@ -212,33 +221,86 @@ main { display: block; }
   animation-delay: .45s;
 }
 
+.card + .card {
+  margin-top: clamp(14px, 2vw, 28px);
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition:
+    transform 1.2s cubic-bezier(.22, 1, .36, 1),
+    filter .8s ease;
+}
+
+@keyframes card-enter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Desktop hover and keyboard focus */
 @media (hover: hover) and (pointer: fine) {
-   .card:focus-visible img {
-  transform: scale(1.025);
-  filter: brightness(.92);
+  .card {
+    cursor: none;
+  }
+
+  .card:hover img,
+  .card:focus-visible img {
+    transform: scale(1.025);
+    filter: brightness(.92);
+  }
 }
 
 .card:focus-visible {
   outline: 2px solid var(--fg);
   outline-offset: -2px;
 }
+
+/* Services: desktop uses the right rail; mobile uses this inline version */
+.services-inline {
+  display: none;
+}
+
+/* Mobile card adjustments */
+@media (max-width: 900px) {
+  .work {
+    width: 100%;
+    padding: 0 var(--gutter);
+  }
+
+  .list-label {
+    padding-top: 8.5em;
+  }
+
+  .list-sub {
+    display: block;
+  }
+
+  .list-sub::before {
+    content: none;
+  }
+
+  .services-inline {
+    display: block;
+    padding: 3em 0 0;
+  }
+
   .card {
-    cursor: none;
-  }
-
-  .card img {
-    transition:
-      transform 1.2s cubic-bezier(.22, 1, .36, 1),
-      filter .8s ease;
-  }
-
-  .card:hover img {
-    transform: scale(1.025);
-    filter: brightness(.92);
+    animation-duration: .5s;
   }
 }
 
-
+/* Keep cards visible when reduced motion is preferred */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
 
 /* -------------------------------------------------------------------------
    About
