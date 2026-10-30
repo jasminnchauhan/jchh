@@ -171,7 +171,17 @@ main { display: block; }
 .list-sub:empty::before { content: none; }
 .cards { display: block; }
 .card { display: block; background: var(--card-bg); }
-.card img { width: 100%; }
+.card img {
+  display: block;
+  width: 100%;
+  transition: transform 1s cubic-bezier(.22, 1, .36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover img {
+    transform: scale(1.015);
+  }
+}
 .services-inline { display: none; }
 
 /* -------------------------------------------------------------------------
