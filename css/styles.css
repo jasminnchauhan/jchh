@@ -1,4 +1,4 @@
-/* ==========================================================================
+./* ==========================================================================
    J/CHH
    Layout concept: a 55% content column on the left (project list / gallery /
    text), and a fixed right column starting at 64% that carries navigation and
@@ -170,10 +170,18 @@ main { display: block; }
 .list-sub::before { content: "—"; margin: 0 .5em 0 .8em; }
 .list-sub:empty::before { content: none; }
 .cards { display: block; }
-.card { display: block; background: var(--card-bg); }
+
+.card {
+  display: block;
+  background: var(--card-bg);
+  padding: clamp(8px, 1.25vw, 18px);
+  overflow: hidden;
+}
+
 .card img {
   display: block;
   width: 100%;
+  height: auto;
   transition: transform 1s cubic-bezier(.22, 1, .36, 1);
 }
 
@@ -182,7 +190,7 @@ main { display: block; }
     transform: scale(1.015);
   }
 }
-.services-inline { display: none; }
+
 
 /* -------------------------------------------------------------------------
    About
