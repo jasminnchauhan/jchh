@@ -1,357 +1,9 @@
-
-/* ==========================================================================
-   J/CHH
-   Layout concept: a 55% content column on the left (project list / gallery /
-   text), and a fixed right column starting at 64% that carries navigation and
-   the details of whatever project is in view. One fixed logo blends with
-   everything underneath it.
-   ========================================================================== */
-
-:root {
-  --bg: #FAF6EF;
-  --fg: #0B0B0A;
-  --muted: #9A968E;
-
-  --font: "Hanken Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --fs: clamp(16px, 1.25vw, 30px);
-  --lh: 1.18;
-  --tracking: -0.03em;
-
-  --gutter: 28px;
-  --left-w: 54.8vw;
-  --col-x: 64.2vw;
-
-  --logo-big: 15.8vw;
-  --logo-scale: 0.1667;
-
-  --ease: cubic-bezier(.7, 0, .2, 1);
-  --ease-out: cubic-bezier(.2, .7, .2, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0F0E0D;
-    --fg: #F3EEE6;
-    --muted: #6F6B65;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #0F0E0D;
-  --fg: #F3EEE6;
-  --muted: #6F6B65;
-  color-scheme: dark;
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-html {
-  background: var(--bg);
-  -webkit-text-size-adjust: 100%;
-}
-
-html.intro-lock,
-html.no-scroll {
-  overflow: hidden;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font);
-  font-size: var(--fs);
-  line-height: var(--lh);
-  letter-spacing: var(--tracking);
-  font-weight: 450;
-  font-synthesis: none;
-  transition: background-color .5s ease, color .5s ease;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, p, ul {
-  margin: 0;
-  padding: 0;
-  font-weight: inherit;
-  font-size: inherit;
-}
-
-ul {
-  list-style: none;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  font: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: 4px;
-}
-
-.skip {
-  position: absolute;
-  left: -999px;
-  top: 0;
-  z-index: 100;
-  background: var(--fg);
-  color: var(--bg);
-  padding: .4em .8em;
-}
-
-.skip:focus {
-  left: var(--gutter);
-  top: var(--gutter);
-}
-
-.label-h {
-  color: var(--fg);
-  margin-bottom: .55em;
-}
-
-/* Underline that draws in. Used for nav, mail and "visit site" links. */
-
-.u, .nav a, .socials a, .langs button {
-  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
-  transition: background-size .45s var(--ease-out), color .3s ease;
-  padding-bottom: .12em;
-}
-
-.u {
-  background-size: 100% 1px;
-}
-
-.nav a:hover,
-.socials a:hover,
-.u:hover {
-  background-size: 100% 1px;
-}
-
-.nav a[aria-current="true"] {
-  background-size: 100% 1px;
-}
-
 /* -------------------------------------------------------------------------
-   Logo
-   ------------------------------------------------------------------------- */
-
-.logo {
-  position: fixed;
-  z-index: 50;
-  top: var(--gutter);
-  left: var(--gutter);
-  color: #fff;
-  mix-blend-mode: difference;
-  font-size: var(--logo-big);
-  line-height: .74;
-  font-weight: 500;
-  letter-spacing: -0.055em;
-  transform-origin: 0 0;
-  transform: scale(var(--logo-scale));
-  transition: transform 1.25s var(--ease);
-  white-space: nowrap;
-}
-
-html.logo-big .logo {
-  transform: scale(1);
-}
-
-.logo-text {
-  display: inline-flex;
-}
-
-.logo .ch {
-  display: inline-block;
-  overflow: hidden;
-  padding: .06em .01em .04em;
-  margin: -.06em -.01em -.04em;
-}
-
-.logo .ch > i {
-  display: block;
-  font-style: normal;
-  transform: translateY(115%);
-}
-
-html.logo-in .logo .ch > i {
-  transform: none;
-  transition: transform 1s var(--ease) calc(var(--i) * 85ms);
-}
-
-/* -------------------------------------------------------------------------
-   Header
-   ------------------------------------------------------------------------- */
-
-.site-header {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: 30;
-  pointer-events: none;
-}
-
-.header-nav {
-  position: absolute;
-  top: var(--gutter);
-  left: var(--col-x);
-  pointer-events: auto;
-}
-
-.header-tools {
-  position: absolute;
-  top: var(--gutter);
-  right: var(--gutter);
-  text-align: right;
-  pointer-events: auto;
-}
-
-.tagline {
-  white-space: nowrap;
-  margin-top: .22em;
-}
-
-.langs button {
-  color: var(--muted);
-}
-
-.langs button[aria-pressed="true"] {
-  color: var(--fg);
-}
-
-.langs button:hover {
-  color: var(--fg);
-}
-
-.theme-toggle {
-  color: var(--muted);
-  display: block;
-  margin-left: auto;
-  transition: color .3s ease;
-}
-
-.theme-toggle:hover {
-  color: var(--fg);
-}
-
-html.js:not(.ui-in) .site-header,
-html.js:not(.ui-in) .rail,
-html.js:not(.ui-in) main {
-  opacity: 0;
-}
-
-.site-header,
-.rail,
-main {
-  transition: opacity .9s ease;
-}
-
-/* -------------------------------------------------------------------------
-   Right rail (desktop): project info + services
-   ------------------------------------------------------------------------- */
-
-.rail {
-  position: fixed;
-  z-index: 20;
-  top: 0;
-  bottom: 0;
-  left: var(--col-x);
-  right: var(--gutter);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 3.4em;
-  padding-bottom: var(--gutter);
-  pointer-events: none;
-}
-
-.rail a {
-  pointer-events: auto;
-}
-
-.rail-info {
-  min-height: 2.4em;
-  transition: opacity .5s ease, transform .5s var(--ease);
-}
-
-html[data-section="about"] .rail-info,
-html[data-section="contact"] .rail-info {
-  opacity: 0;
-  transform: translateY(.6em);
-}
-
-html[data-section="contact"] .rail-services {
-  opacity: 0;
-  transform: translateY(.6em);
-}
-
-.rail-services {
-  transition: opacity .5s ease, transform .5s var(--ease);
-}
-
-#info-index {
-  color: var(--muted);
-}
-
-/* Line mask: text slides up out of / into overflow:hidden */
-
-.mask {
-  overflow: hidden;
-}
-
-.mask > span {
-  display: block;
-  transition: transform .45s var(--ease);
-}
-
-.mask.out > span {
-  transform: translateY(105%);
-}
-
-/* Services */
-
-.services li {
-  display: inline;
-  color: var(--fg);
-  transition: color .5s ease;
-}
-
-.services li + li {
-  margin-left: .28em;
-}
-
-.services li:not(:last-child)::after {
-  content: ",";
-}
-
-.services li.off {
-  color: var(--muted);
-}
-
-/* -------------------------------------------------------------------------
-   Work / project list
+   Work / pinned project stack
    ------------------------------------------------------------------------- */
 
 .work {
-  padding: 0 0 0 var(--gutter);
+  padding: 0 0 200svh var(--gutter);
   width: calc(var(--left-w) + var(--gutter));
   overflow: visible;
 }
@@ -364,432 +16,94 @@ html[data-section="contact"] .rail-services {
 
 .cards {
   display: block;
-  position: relative;
-  overflow: visible;
-}
-
-/* Scroll-driven project stack */
-
-.card {
   position: sticky;
   top: clamp(76px, 10vh, 110px);
+  width: 100%;
+  height: min(76vh, 850px);
+  min-height: 360px;
+  overflow: visible;
+  isolation: isolate;
+}
+
+.card {
+  position: absolute;
+  inset: 0;
   display: block;
   background: var(--card-bg);
   padding: clamp(8px, 1.25vw, 18px);
   overflow: hidden;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
+  transition:
+    transform .85s var(--ease),
+    opacity .65s ease,
+    filter .65s ease;
 }
 
-.card:nth-child(1) {
-  z-index: 1;
-}
-
-.card:nth-child(2) {
-  z-index: 2;
-}
-
-.card:nth-child(3) {
-  z-index: 3;
-}
-
-.card + .card {
-  margin-top: clamp(14px, 2vw, 28px);
-}
+.card:nth-child(1) { z-index: 1; }
+.card:nth-child(2) { z-index: 2; }
+.card:nth-child(3) { z-index: 3; }
 
 .card img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   transform: scale(1);
   transition:
     transform .8s cubic-bezier(.2, .7, .2, 1),
     filter .8s cubic-bezier(.2, .7, .2, 1);
 }
 
-/* Smooth image movement as each project enters and leaves view */
-
-@supports (animation-timeline: view()) {
-  .card img {
-    animation: project-image-scroll linear both;
-    animation-timeline: view();
-    animation-range: entry 0% exit 100%;
-  }
-
-  @keyframes project-image-scroll {
-    from {
-      transform: scale(.96);
-      filter: brightness(.82);
-    }
-
-    to {
-      transform: scale(1);
-      filter: brightness(1);
-    }
-  }
+/* Stacked transition states */
+.card:nth-child(1) {
+  transform: translateY(calc(var(--stack-step, 0) * -100%));
 }
 
-/* -------------------------------------------------------------------------
-   About
-   ------------------------------------------------------------------------- */
-
-.about {
-  min-height: 100svh;
-  padding: 30vh var(--gutter) var(--gutter);
-  display: flex;
-  align-items: flex-end;
+.card:nth-child(2) {
+  transform: translateY(calc((var(--stack-step, 0) - 1) * -100%));
 }
 
-.about-text {
-  width: min(34vw, 40em);
+.card:nth-child(3) {
+  transform: translateY(calc((var(--stack-step, 0) - 2) * -100%));
 }
 
-.about-text p {
-  margin-bottom: 1em;
+.card.is-active {
+  filter: brightness(1);
 }
 
-.awards {
-  margin-top: 2.6em;
+.card:not(.is-active) img {
+  filter: brightness(.88);
 }
 
-.awards p {
-  margin-bottom: 0;
+.card.is-active img {
+  filter: brightness(1);
 }
-
-/* -------------------------------------------------------------------------
-   Contact
-   ------------------------------------------------------------------------- */
-
-.contact {
-  position: relative;
-  min-height: 100svh;
-}
-
-.contact-cta,
-.socials,
-.copy {
-  position: absolute;
-  bottom: var(--gutter);
-}
-
-.contact-cta {
-  left: var(--gutter);
-  width: 12.6em;
-}
-
-.contact-cta p {
-  margin-bottom: .5em;
-}
-
-.contact-cta .u {
-  display: inline-block;
-}
-
-.socials {
-  left: var(--col-x);
-}
-
-.copy {
-  right: var(--gutter);
-  color: var(--muted);
-}
-
-/* -------------------------------------------------------------------------
-   Project overlay
-   ------------------------------------------------------------------------- */
-
-.project {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: var(--bg);
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity .55s ease, visibility 0s linear .55s;
-}
-
-.project.open {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity .55s ease;
-}
-
-.project-gallery {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--gutter);
-  width: var(--left-w);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-top: calc(var(--gutter) * 3.4);
-  padding-bottom: var(--gutter);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  scrollbar-width: none;
-  outline: none;
-}
-
-.project-gallery::-webkit-scrollbar {
-  display: none;
-}
-
-.project-gallery figure {
-  margin: 0;
-  background: var(--card-bg);
-}
-
-.project-gallery img {
-  width: 100%;
-}
-
-.project-gallery figure {
-  opacity: 0;
-  transform: translateY(2.5em);
-}
-
-.project.open .project-gallery figure {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity .8s ease calc(var(--i) * 120ms + .25s),
-    transform 1s var(--ease-out) calc(var(--i) * 120ms + .25s);
-}
-
-.project-rail {
-  position: absolute;
-  top: var(--gutter);
-  bottom: var(--gutter);
-  left: var(--col-x);
-  right: var(--gutter);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  pointer-events: none;
-}
-
-.project-rail a {
-  pointer-events: auto;
-}
-
-.project-desc {
-  max-width: 18em;
-  margin: 1em 0;
-}
-
-.project-title {
-  white-space: nowrap;
-}
-
-.project-title .yr {
-  margin-left: .6em;
-}
-
-.project-close {
-  position: absolute;
-  top: var(--gutter);
-  right: var(--gutter);
-  color: var(--muted);
-  transition: color .3s ease;
-}
-
-.project-close:hover {
-  color: var(--fg);
-}
-
-/* -------------------------------------------------------------------------
-   Cursor label
-   ------------------------------------------------------------------------- */
-
-.cursor {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 60;
-  pointer-events: none;
-  color: #fff;
-  mix-blend-mode: difference;
-  opacity: 0;
-  transition: opacity .25s ease;
-  white-space: nowrap;
-}
-
-.cursor.on {
-  opacity: 1;
-}
-
-@media (hover: none), (pointer: coarse) {
-  .cursor {
-    display: none;
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .card {
-    cursor: pointer;
-  }
-}
-
-/* -------------------------------------------------------------------------
-   Tablet / mobile
-   ------------------------------------------------------------------------- */
 
 @media (max-width: 900px) {
-  :root {
-    --fs: 17px;
-    --gutter: 16px;
-    --left-w: 100%;
-    --logo-big: 24vw;
-    --logo-scale: 0.2;
-  }
-
-  .rail {
-    display: none;
-  }
-
-  .header-nav {
-    left: auto;
-    right: var(--gutter);
-    text-align: right;
-  }
-
-  .tagline {
-    display: none;
-  }
-
-  .header-tools {
-    top: calc(var(--gutter) + 2.7em);
-    display: flex;
-    gap: 1em;
-    align-items: baseline;
-  }
-
-  .theme-toggle {
-    margin: 0;
-  }
-
-  .logo {
-    top: calc(var(--gutter) + .15em);
-  }
-
   .work {
+    padding: 0 var(--gutter) 0;
     width: 100%;
-    padding: 0 var(--gutter);
   }
 
-  .list-label {
-    padding-top: 8.5em;
-  }
-
-  .list-sub {
+  .cards {
+    position: relative;
+    top: auto;
+    height: auto;
+    min-height: 0;
     display: block;
   }
-
-  .list-sub::before {
-    content: none;
-  }
-
-  /* Services appear here only on mobile because the right rail is hidden */
-
-  .services-inline {
-    display: block;
-    padding: 3em 0 0;
-  }
-
-  /* Normal project scrolling on mobile */
 
   .card {
     position: relative;
-    top: auto;
-    z-index: auto;
-    transform: none;
+    inset: auto;
+    transform: none !important;
+    height: auto;
+    margin: 0 0 clamp(14px, 2vw, 28px);
   }
 
   .card img {
-    animation: none;
-  }
-
-  .about {
-    padding-top: 18vh;
-  }
-
-  .about-text {
-    width: 100%;
-  }
-
-  .contact-cta {
-    width: 12.6em;
-    bottom: auto;
-    top: calc(100svh - 12em);
-  }
-
-  .socials {
-    left: var(--gutter);
-    bottom: calc(var(--gutter) + 3.2em);
-  }
-
-  .copy {
-    left: var(--gutter);
-    right: auto;
-  }
-
-  /* Overlay becomes one scrolling column: details, gallery, services */
-
-  .project {
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    padding: 0 var(--gutter) var(--gutter);
-  }
-
-  .project-rail {
-    display: contents;
-  }
-
-  .project-head {
-    order: 1;
-    padding-top: 5.2em;
-  }
-
-  .project-gallery {
-    order: 2;
-    position: static;
-    overflow: visible;
-    width: auto;
-    padding: 1.6em 0 0;
-  }
-
-  .project-rail .rail-services {
-    order: 3;
-    padding-top: 2.4em;
-  }
-
-  .project-close {
-    position: fixed;
-    z-index: 45;
-    top: var(--gutter);
-    right: var(--gutter);
-  }
-}
-
-/* Desktop: hide the duplicate inline Services section.
-   The fixed right rail remains visible. */
-
-@media (min-width: 901px) {
-  .services-inline {
-    display: none;
-  }
-}
-
-/* Reduced motion accessibility */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition-duration: .01ms !important;
-    transition-delay: 0s !important;
-    animation: none !important;
+    height: auto;
+    object-fit: contain;
   }
 }
