@@ -189,27 +189,38 @@ function cardInView() {
 
   if (!cards.length) return null;
 
-  const line = innerHeight * 0.5;
-
-  const containing = cards.find((card) => {
-    const r = card.getBoundingClientRect();
-    return r.top <= line && r.bottom >= line;
-  });
-
-  if (containing) return containing.dataset.slug;
-
-  let best = cards[0];
-  let bestDistance = Infinity;
+  const line = window.innerHeight * 0.5;
+  let activeCard = null;
 
   for (const card of cards) {
-    const r = card.getBoundingClientRect();
-    const distance = Math.abs((r.top + r.bottom) / 2 - line);
+    const rect = card.getBoundingClientRect();
 
-    if (distance < bestDistance) {
-      bestDistance = distance;
-      best = card;
+    if (rect.top <= line && rect.bottom >= line) {
+      activeCard = card;
     }
   }
+
+  if (activeCard) {
+    return activeCard.dataset.slug;
+  }
+
+  let closestCard = null;
+  let closestDistance = Infinity;
+
+  for (const card of cards) {
+    const rect = card.getBoundingClientRect();
+    const distance = Math.abs(
+      (rect.top + rect.bottom) / 2 - line
+    );
+
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestCard = card;
+    }
+  }
+
+  return closestCard ? closestCard.dataset.slug : null;
+}
 
   return best.dataset.slug;
 }
