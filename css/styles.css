@@ -177,6 +177,9 @@ main { display: block; }
   background: var(--card-bg);
   padding: clamp(8px, 1.25vw, 18px);
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: card-enter .8s cubic-bezier(.22, 1, .36, 1) forwards;
 }
 
 .card img {
@@ -186,7 +189,39 @@ main { display: block; }
   transition: transform 1s cubic-bezier(.22, 1, .36, 1);
 }
 
+.card + .card {
+  margin-top: clamp(14px, 2vw, 28px);
+}
+
+@keyframes card-enter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card:nth-child(2) {
+  animation-delay: .15s;
+}
+
+.card:nth-child(3) {
+  animation-delay: .3s;
+}
+
+.card:nth-child(4) {
+  animation-delay: .45s;
+}
+
 @media (hover: hover) and (pointer: fine) {
+   .card:focus-visible img {
+  transform: scale(1.025);
+  filter: brightness(.92);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: -2px;
+}
   .card {
     cursor: none;
   }
@@ -202,6 +237,8 @@ main { display: block; }
     filter: brightness(.92);
   }
 }
+
+
 
 /* -------------------------------------------------------------------------
    About
@@ -353,7 +390,11 @@ main { display: block; }
   .project-rail .rail-services { order: 3; padding-top: 2.4em; }
   .project-close { position: fixed; z-index: 45; top: var(--gutter); right: var(--gutter); }
 }
-
+@media (max-width: 900px) {
+  .card {
+    animation-duration: .5s;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; transition-delay: 0s !important; animation: none !important; }
 }
