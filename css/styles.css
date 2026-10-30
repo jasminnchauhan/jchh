@@ -187,11 +187,21 @@ main { display: block; }
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .card {
+    cursor: none;
+  }
+
+  .card img {
+    transition:
+      transform 1.2s cubic-bezier(.22, 1, .36, 1),
+      filter .8s ease;
+  }
+
   .card:hover img {
-    transform: scale(1.015);
+    transform: scale(1.025);
+    filter: brightness(.92);
   }
 }
-
 
 /* -------------------------------------------------------------------------
    About
