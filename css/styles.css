@@ -1,3 +1,4 @@
+
 /* ==========================================================================
    J/CHH
    Layout concept: a 55% content column on the left (project list / gallery /
@@ -43,7 +44,9 @@
   color-scheme: dark;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
 html {
   background: var(--bg);
@@ -51,7 +54,9 @@ html {
 }
 
 html.intro-lock,
-html.no-scroll { overflow: hidden; }
+html.no-scroll {
+  overflow: hidden;
+}
 
 body {
   margin: 0;
@@ -74,8 +79,14 @@ h1, h2, p, ul {
   font-size: inherit;
 }
 
-ul { list-style: none; }
-a { color: inherit; text-decoration: none; }
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
 button {
   font: inherit;
@@ -119,22 +130,29 @@ img {
 }
 
 /* Underline that draws in. Used for nav, mail and "visit site" links. */
+
 .u, .nav a, .socials a, .langs button {
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
   transition: background-size .45s var(--ease-out), color .3s ease;
   padding-bottom: .12em;
 }
 
-.u { background-size: 100% 1px; }
+.u {
+  background-size: 100% 1px;
+}
 
 .nav a:hover,
 .socials a:hover,
-.u:hover { background-size: 100% 1px; }
+.u:hover {
+  background-size: 100% 1px;
+}
 
-.nav a[aria-current="true"] { background-size: 100% 1px; }
+.nav a[aria-current="true"] {
+  background-size: 100% 1px;
+}
 
 /* -------------------------------------------------------------------------
-   Logo: fixed, scales between "header" and "hero" sizes
+   Logo
    ------------------------------------------------------------------------- */
 
 .logo {
@@ -154,8 +172,13 @@ img {
   white-space: nowrap;
 }
 
-html.logo-big .logo { transform: scale(1); }
-.logo-text { display: inline-flex; }
+html.logo-big .logo {
+  transform: scale(1);
+}
+
+.logo-text {
+  display: inline-flex;
+}
 
 .logo .ch {
   display: inline-block;
@@ -176,7 +199,7 @@ html.logo-in .logo .ch > i {
 }
 
 /* -------------------------------------------------------------------------
-   Header (nav, language, theme)
+   Header
    ------------------------------------------------------------------------- */
 
 .site-header {
@@ -206,9 +229,17 @@ html.logo-in .logo .ch > i {
   margin-top: .22em;
 }
 
-.langs button { color: var(--muted); }
-.langs button[aria-pressed="true"] { color: var(--fg); }
-.langs button:hover { color: var(--fg); }
+.langs button {
+  color: var(--muted);
+}
+
+.langs button[aria-pressed="true"] {
+  color: var(--fg);
+}
+
+.langs button:hover {
+  color: var(--fg);
+}
 
 .theme-toggle {
   color: var(--muted);
@@ -217,15 +248,21 @@ html.logo-in .logo .ch > i {
   transition: color .3s ease;
 }
 
-.theme-toggle:hover { color: var(--fg); }
+.theme-toggle:hover {
+  color: var(--fg);
+}
 
 html.js:not(.ui-in) .site-header,
 html.js:not(.ui-in) .rail,
-html.js:not(.ui-in) main { opacity: 0; }
+html.js:not(.ui-in) main {
+  opacity: 0;
+}
 
 .site-header,
 .rail,
-main { transition: opacity .9s ease; }
+main {
+  transition: opacity .9s ease;
+}
 
 /* -------------------------------------------------------------------------
    Right rail (desktop): project info + services
@@ -246,7 +283,9 @@ main { transition: opacity .9s ease; }
   pointer-events: none;
 }
 
-.rail a { pointer-events: auto; }
+.rail a {
+  pointer-events: auto;
+}
 
 .rail-info {
   min-height: 2.4em;
@@ -268,31 +307,49 @@ html[data-section="contact"] .rail-services {
   transition: opacity .5s ease, transform .5s var(--ease);
 }
 
-#info-index { color: var(--muted); }
+#info-index {
+  color: var(--muted);
+}
 
 /* Line mask: text slides up out of / into overflow:hidden */
-.mask { overflow: hidden; }
+
+.mask {
+  overflow: hidden;
+}
 
 .mask > span {
   display: block;
   transition: transform .45s var(--ease);
 }
 
-.mask.out > span { transform: translateY(105%); }
+.mask.out > span {
+  transform: translateY(105%);
+}
 
-/* Services: items not used by the current project turn grey */
+/* Services */
+
 .services li {
   display: inline;
   color: var(--fg);
   transition: color .5s ease;
 }
 
-.services li + li { margin-left: .28em; }
-.services li:not(:last-child)::after { content: ","; }
-.services li.off { color: var(--muted); }
+.services li + li {
+  margin-left: .28em;
+}
 
+.services li:not(:last-child)::after {
+  content: ",";
+}
 
-/* Work (project list) */
+.services li.off {
+  color: var(--muted);
+}
+
+/* -------------------------------------------------------------------------
+   Work / project list
+   ------------------------------------------------------------------------- */
+
 .work {
   padding: 0 0 0 var(--gutter);
   width: calc(var(--left-w) + var(--gutter));
@@ -307,10 +364,12 @@ html[data-section="contact"] .rail-services {
 
 .cards {
   display: block;
+  position: relative;
   overflow: visible;
 }
 
 /* Scroll-driven project stack */
+
 .card {
   position: sticky;
   top: clamp(76px, 10vh, 110px);
@@ -318,6 +377,8 @@ html[data-section="contact"] .rail-services {
   background: var(--card-bg);
   padding: clamp(8px, 1.25vw, 18px);
   overflow: hidden;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .card:nth-child(1) {
@@ -340,26 +401,33 @@ html[data-section="contact"] .rail-services {
   display: block;
   width: 100%;
   height: auto;
+  transform: scale(1);
   transition:
-    transform 1s cubic-bezier(.2, .7, .2, 1),
-    filter 1s cubic-bezier(.2, .7, .2, 1);
+    transform .8s cubic-bezier(.2, .7, .2, 1),
+    filter .8s cubic-bezier(.2, .7, .2, 1);
 }
 
-/* Keep the mobile project list in normal document flow */
-@media (max-width: 900px) {
-  .work {
-    width: 100%;
-    padding: 0 var(--gutter);
+/* Smooth image movement as each project enters and leaves view */
+
+@supports (animation-timeline: view()) {
+  .card img {
+    animation: project-image-scroll linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
   }
 
-  .card {
-    position: relative;
-    top: auto;
-    z-index: auto;
+  @keyframes project-image-scroll {
+    from {
+      transform: scale(.96);
+      filter: brightness(.82);
+    }
+
+    to {
+      transform: scale(1);
+      filter: brightness(1);
+    }
   }
 }
-
-
 
 /* -------------------------------------------------------------------------
    About
@@ -372,16 +440,30 @@ html[data-section="contact"] .rail-services {
   align-items: flex-end;
 }
 
-.about-text { width: min(34vw, 40em); }
-.about-text p { margin-bottom: 1em; }
-.awards { margin-top: 2.6em; }
-.awards p { margin-bottom: 0; }
+.about-text {
+  width: min(34vw, 40em);
+}
+
+.about-text p {
+  margin-bottom: 1em;
+}
+
+.awards {
+  margin-top: 2.6em;
+}
+
+.awards p {
+  margin-bottom: 0;
+}
 
 /* -------------------------------------------------------------------------
    Contact
    ------------------------------------------------------------------------- */
 
-.contact { position: relative; min-height: 100svh; }
+.contact {
+  position: relative;
+  min-height: 100svh;
+}
 
 .contact-cta,
 .socials,
@@ -395,10 +477,22 @@ html[data-section="contact"] .rail-services {
   width: 12.6em;
 }
 
-.contact-cta p { margin-bottom: .5em; }
-.contact-cta .u { display: inline-block; }
-.socials { left: var(--col-x); }
-.copy { right: var(--gutter); color: var(--muted); }
+.contact-cta p {
+  margin-bottom: .5em;
+}
+
+.contact-cta .u {
+  display: inline-block;
+}
+
+.socials {
+  left: var(--col-x);
+}
+
+.copy {
+  right: var(--gutter);
+  color: var(--muted);
+}
 
 /* -------------------------------------------------------------------------
    Project overlay
@@ -437,14 +531,18 @@ html[data-section="contact"] .rail-services {
   outline: none;
 }
 
-.project-gallery::-webkit-scrollbar { display: none; }
+.project-gallery::-webkit-scrollbar {
+  display: none;
+}
 
 .project-gallery figure {
   margin: 0;
   background: var(--card-bg);
 }
 
-.project-gallery img { width: 100%; }
+.project-gallery img {
+  width: 100%;
+}
 
 .project-gallery figure {
   opacity: 0;
@@ -471,10 +569,22 @@ html[data-section="contact"] .rail-services {
   pointer-events: none;
 }
 
-.project-rail a { pointer-events: auto; }
-.project-desc { max-width: 18em; margin: 1em 0; }
-.project-title { white-space: nowrap; }
-.project-title .yr { margin-left: .6em; }
+.project-rail a {
+  pointer-events: auto;
+}
+
+.project-desc {
+  max-width: 18em;
+  margin: 1em 0;
+}
+
+.project-title {
+  white-space: nowrap;
+}
+
+.project-title .yr {
+  margin-left: .6em;
+}
 
 .project-close {
   position: absolute;
@@ -484,7 +594,9 @@ html[data-section="contact"] .rail-services {
   transition: color .3s ease;
 }
 
-.project-close:hover { color: var(--fg); }
+.project-close:hover {
+  color: var(--fg);
+}
 
 /* -------------------------------------------------------------------------
    Cursor label
@@ -503,22 +615,24 @@ html[data-section="contact"] .rail-services {
   white-space: nowrap;
 }
 
-.cursor.on { opacity: 1; }
+.cursor.on {
+  opacity: 1;
+}
 
 @media (hover: none), (pointer: coarse) {
-  .cursor { display: none; }
+  .cursor {
+    display: none;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .card { cursor: pointer; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card img { transition: none; }
+  .card {
+    cursor: pointer;
+  }
 }
 
 /* -------------------------------------------------------------------------
-   Tablet / mobile: single column, no fixed rail
+   Tablet / mobile
    ------------------------------------------------------------------------- */
 
 @media (max-width: 900px) {
@@ -530,7 +644,9 @@ html[data-section="contact"] .rail-services {
     --logo-scale: 0.2;
   }
 
-  .rail { display: none; }
+  .rail {
+    display: none;
+  }
 
   .header-nav {
     left: auto;
@@ -538,7 +654,9 @@ html[data-section="contact"] .rail-services {
     text-align: right;
   }
 
-  .tagline { display: none; }
+  .tagline {
+    display: none;
+  }
 
   .header-tools {
     top: calc(var(--gutter) + 2.7em);
@@ -547,25 +665,58 @@ html[data-section="contact"] .rail-services {
     align-items: baseline;
   }
 
-  .theme-toggle { margin: 0; }
-  .logo { top: calc(var(--gutter) + .15em); }
+  .theme-toggle {
+    margin: 0;
+  }
+
+  .logo {
+    top: calc(var(--gutter) + .15em);
+  }
 
   .work {
     width: 100%;
     padding: 0 var(--gutter);
   }
 
-  .list-label { padding-top: 8.5em; }
-  .list-sub { display: block; }
-  .list-sub::before { content: none; }
+  .list-label {
+    padding-top: 8.5em;
+  }
+
+  .list-sub {
+    display: block;
+  }
+
+  .list-sub::before {
+    content: none;
+  }
+
+  /* Services appear here only on mobile because the right rail is hidden */
 
   .services-inline {
     display: block;
     padding: 3em 0 0;
   }
 
-  .about { padding-top: 18vh; }
-  .about-text { width: 100%; }
+  /* Normal project scrolling on mobile */
+
+  .card {
+    position: relative;
+    top: auto;
+    z-index: auto;
+    transform: none;
+  }
+
+  .card img {
+    animation: none;
+  }
+
+  .about {
+    padding-top: 18vh;
+  }
+
+  .about-text {
+    width: 100%;
+  }
 
   .contact-cta {
     width: 12.6em;
@@ -584,6 +735,7 @@ html[data-section="contact"] .rail-services {
   }
 
   /* Overlay becomes one scrolling column: details, gallery, services */
+
   .project {
     overflow-y: auto;
     display: flex;
@@ -591,7 +743,9 @@ html[data-section="contact"] .rail-services {
     padding: 0 var(--gutter) var(--gutter);
   }
 
-  .project-rail { display: contents; }
+  .project-rail {
+    display: contents;
+  }
 
   .project-head {
     order: 1;
@@ -618,6 +772,17 @@ html[data-section="contact"] .rail-services {
     right: var(--gutter);
   }
 }
+
+/* Desktop: hide the duplicate inline Services section.
+   The fixed right rail remains visible. */
+
+@media (min-width: 901px) {
+  .services-inline {
+    display: none;
+  }
+}
+
+/* Reduced motion accessibility */
 
 @media (prefers-reduced-motion: reduce) {
   *,
