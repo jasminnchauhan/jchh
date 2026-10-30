@@ -1,4 +1,3 @@
-
 import { LANGS, SERVICES, projects, dict } from './data.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -10,21 +9,22 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const store = {
   get(k) {
-    try { return localStorage.getItem(k); }
-    catch { return null; }
+    try { return localStorage.getItem(k); } catch { return null; }
   },
   set(k, v) {
-    try { localStorage.setItem(k, v); }
-    catch { /* storage unavailable */ }
+    try { localStorage.setItem(k, v); } catch {}
   },
 };
 
-/* ---------------------------------------------------------------- state */
 let lang = 'en';
 let ready = false;
 let currentSection = 'work';
 let activeSlug = projects[0].slug;
 let openSlug = null;
+let ticking = false;
+let infoTimer;
+let pinnedIndex = 0;
+let hoverIndex = null;
 
 const sections = {
   work: $('#work'),
@@ -32,10 +32,12 @@ const sections = {
   contact: $('#contact')
 };
 
+const cardsWrap = $('.cards');
+const cards = $$('.card');
 const bySlug = Object.fromEntries(projects.map((p) => [p.slug, p]));
 const t = (key) => dict[lang][key] ?? dict.en[key] ?? key;
+const pad = (n) => String(n).padStart(2, '0');
 
-/* ---------------------------------------------------------------- routing helpers */
 function parse(path) {
   const p = path.replace(/\/+$/, '') || '/';
 
@@ -49,11 +51,11 @@ function parse(path) {
   return { type: 'section', id: 'work' };
 }
 
-const sectionPath = (id) => (id === 'work' ? '/' : `/${id}`);
+const sectionPath = (id) => id === 'work' ? '/' : `/${id}`;
 
-/* ---------------------------------------------------------------- logo */
 function buildLogo() {
   const holder = $('.logo-text');
+  holder.replaceChildren();
 
   [...'J/CHH'].forEach((c, i) => {
     const ch = document.createElement('span');
@@ -62,13 +64,11 @@ function buildLogo() {
 
     const inner = document.createElement('i');
     inner.textContent = c;
-
     ch.append(inner);
     holder.append(ch);
   });
 }
 
-/* ---------------------------------------------------------------- i18n */
 function renderServices(ul, active) {
   ul.replaceChildren(
     ...SERVICES.map((key) => {
@@ -76,10 +76,7 @@ function renderServices(ul, active) {
       li.dataset.s = key;
       li.textContent = t(`svc.${key}`);
 
-      if (active && !active.includes(key)) {
-        li.classList.add('off');
-      }
-
+      if (active && !active.includes(key)) li.classList.add('off');
       return li;
     })
   );
@@ -119,7 +116,6 @@ function applyLang(next, { persist = true } = {}) {
   updateTitle();
 }
 
-/* ---------------------------------------------------------------- theme */
 function updateThemeLabel() {
   const dark = root.dataset.theme === 'dark';
 
@@ -133,21 +129,16 @@ function updateThemeLabel() {
 
 $('#theme-toggle').addEventListener('click', () => {
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-
   root.dataset.theme = next;
   store.set('jchh-theme', next);
   updateThemeLabel();
 });
 
-/* ---------------------------------------------------------------- rail info (title / year) */
 const idxEl = $('#info-index');
 const titleEl = $('#info-title');
-const pad = (n) => String(n).padStart(2, '0');
-let infoTimer;
 
 function setInfo(p, { animate = true } = {}) {
   const i = projects.indexOf(p);
-
   const idx = pad(i + 1);
   const title = `${p.name} / ${p.year}`;
 
@@ -169,7 +160,7 @@ function setInfo(p, { animate = true } = {}) {
   infoTimer = setTimeout(() => {
     apply();
     masks.forEach((m) => m.classList.remove('out'));
-  }, 330);
+  }, 220);
 }
 
 function setActiveProject(slug) {
@@ -178,7 +169,7 @@ function setActiveProject(slug) {
   const changed = slug !== activeSlug;
   activeSlug = slug;
 
-  $$('.card').forEach((card) => {
+  cards.forEach((card) => {
     card.classList.toggle('is-active', card.dataset.slug === slug);
   });
 
@@ -188,58 +179,64 @@ function setActiveProject(slug) {
   setServicesActive(bySlug[slug].services);
 }
 
-/* ---------------------------------------------------------------- scroll: sections, logo size, active card */
 function sectionInView() {
   const mid = innerHeight * 0.5;
   let cur = 'work';
 
   for (const id of Object.keys(sections)) {
-    if (sections[id].getBoundingClientRect().top <= mid) {
-      cur = id;
-    }
+    if (sections[id].getBoundingClientRect().top <= mid) cur = id;
   }
 
   return cur;
 }
 
-function cardInView() {
-  const cards = $$('.card');
+/* Pinned project stack progress */
+function getPinnedProgress() {
+  if (innerWidth <= 900 || !cardsWrap) return 0;
 
+  const rect = sections.work.getBoundingClientRect();
+  const start = Math.max(0, sections.work.offsetTop);
+  const distance = Math.max(1, sections.work.offsetHeight - innerHeight);
+  const travelled = Math.max(0, Math.min(distance, start - rect.top));
+
+  return travelled / distance;
+}
+
+function updatePinnedStack() {
+  if (innerWidth <= 900 || !ready || openSlug) return;
+
+  const progress = getPinnedProgress();
+  const maxIndex = cards.length - 1;
+  const nextIndex = Math.min(maxIndex, Math.round(progress * maxIndex));
+
+  if (hoverIndex !== null) return;
+
+  pinnedIndex = nextIndex;
+  setActiveProject(cards[pinnedIndex]?.dataset.slug);
+}
+
+function cardInView() {
   if (!cards.length) return null;
 
-  const line = window.innerHeight * 0.5;
-  let activeCard = null;
-
-  // Later cards appear above earlier cards in the sticky stack.
-  for (const card of cards) {
-    const rect = card.getBoundingClientRect();
-
-    if (rect.top <= line && rect.bottom >= line) {
-      activeCard = card;
-    }
-  }
-
-  if (activeCard) {
-    return activeCard.dataset.slug;
-  }
-
-  let closestCard = null;
-  let closestDistance = Infinity;
-
-  for (const card of cards) {
-    const rect = card.getBoundingClientRect();
-
-    const distance = Math.abs(
-      (rect.top + rect.bottom) / 2 - line
+  if (innerWidth > 900) {
+    const progress = getPinnedProgress();
+    const index = Math.min(
+      cards.length - 1,
+      Math.round(progress * (cards.length - 1))
     );
 
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestCard = card;
-    }
+    return cards[index]?.dataset.slug ?? null;
   }
 
-  return closestCard ? closestCard.dataset.slug : null;
+  const line = innerHeight * 0.5;
+  let active = null;
+
+  for (const card of cards) {
+    const rect = card.getBoundingClientRect();
+    if (rect.top <= line && rect.bottom >= line) active = card;
+  }
+
+  return active?.dataset.slug ?? cards[0]?.dataset.slug ?? null;
 }
 
 function updateTitle() {
@@ -257,16 +254,11 @@ function setSection(id) {
   $$('[data-section-link]').forEach((a) => {
     if (a.classList.contains('logo')) return;
 
-    a.setAttribute(
-      'aria-current',
-      String(a.dataset.sectionLink === id)
-    );
+    a.setAttribute('aria-current', String(a.dataset.sectionLink === id));
   });
 
   root.classList.toggle('logo-big', id === 'contact');
 }
-
-let ticking = false;
 
 function onScroll() {
   if (!ready || openSlug || ticking) return;
@@ -284,7 +276,11 @@ function onScroll() {
     }
 
     if (id === 'work') {
-      setActiveProject(cardInView());
+      updatePinnedStack();
+
+      if (innerWidth <= 900) {
+        setActiveProject(cardInView());
+      }
     }
   });
 }
@@ -303,7 +299,7 @@ function scrollToSection(id, behavior = 'smooth') {
   setSection(id);
 }
 
-/* ---------------------------------------------------------------- project overlay */
+/* Project overlay */
 const overlay = $('#project');
 const gallery = $('#project-gallery');
 
@@ -379,7 +375,6 @@ function openProject(slug, { push = true } = {}) {
 
   $('#cursor').classList.remove('on');
   updateTitle();
-
   gallery.focus({ preventScroll: true });
 }
 
@@ -394,23 +389,18 @@ function closeProject({ silent = false } = {}) {
   updateTitle();
 
   if (!silent) {
-    if (history.state?.from === 'list') {
-      history.back();
-    } else {
-      history.replaceState({}, '', sectionPath(currentSection));
-    }
+    if (history.state?.from === 'list') history.back();
+    else history.replaceState({}, '', sectionPath(currentSection));
   }
 }
 
 $('#project-close').addEventListener('click', () => closeProject());
 
 addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && openSlug) {
-    closeProject();
-  }
+  if (e.key === 'Escape' && openSlug) closeProject();
 });
 
-/* ---------------------------------------------------------------- navigation */
+/* Navigation */
 function navigate(path, { push = true } = {}) {
   const r = parse(path);
 
@@ -419,9 +409,7 @@ function navigate(path, { push = true } = {}) {
     return;
   }
 
-  if (openSlug) {
-    closeProject({ silent: true });
-  }
+  if (openSlug) closeProject({ silent: true });
 
   if (push && location.pathname !== sectionPath(r.id)) {
     history.pushState({}, '', sectionPath(r.id));
@@ -444,7 +432,6 @@ document.addEventListener('click', (e) => {
   ) return;
 
   e.preventDefault();
-
   if (!ready) return;
 
   navigate(a.getAttribute('href'));
@@ -460,15 +447,12 @@ addEventListener('popstate', () => {
     return;
   }
 
-  if (openSlug) {
-    closeProject({ silent: true });
-    return;
-  }
+  if (openSlug) closeProject({ silent: true });
 
   scrollToSection(r.id, 'instant');
 });
 
-/* ---------------------------------------------------------------- cursor label */
+/* Cursor and hover-following project information */
 function initCursor() {
   if (!finePointer) return;
 
@@ -489,25 +473,45 @@ function initCursor() {
     cy += (y - cy) * 0.18;
 
     cur.style.transform = `translate3d(${cx + 16}px, ${cy - 4}px, 0)`;
-
     requestAnimationFrame(loop);
   })();
 
-  for (const card of $$('.card')) {
+  cards.forEach((card, index) => {
     card.addEventListener('pointerenter', () => {
       if (openSlug || !ready) return;
 
+      hoverIndex = index;
       cur.classList.add('on');
       setActiveProject(card.dataset.slug);
     });
 
+    card.addEventListener('pointermove', (e) => {
+      if (openSlug || !ready) return;
+
+      const rect = card.getBoundingClientRect();
+      const ratio = (e.clientY - rect.top) / Math.max(1, rect.height);
+
+      // Keep the metadata responsive to the cursor's vertical direction.
+      const target = ratio < 0.5
+        ? Math.max(0, index - 1)
+        : Math.min(cards.length - 1, index + 1);
+
+      if (target !== index && Math.abs(e.movementY) > 0) {
+        setActiveProject(cards[target].dataset.slug);
+      } else {
+        setActiveProject(card.dataset.slug);
+      }
+    });
+
     card.addEventListener('pointerleave', () => {
       cur.classList.remove('on');
+      hoverIndex = null;
+      updatePinnedStack();
     });
-  }
+  });
 }
 
-/* ---------------------------------------------------------------- intro */
+/* Intro */
 async function intro(route) {
   const startAtContact = route.type === 'section' && route.id === 'contact';
 
@@ -519,31 +523,25 @@ async function intro(route) {
   }
 
   await wait(120);
-
   root.classList.add('logo-in');
 
   await wait(1900);
-
   root.classList.add('ui-in');
 
-  if (!startAtContact) {
-    root.classList.remove('logo-big');
-  }
-
+  if (!startAtContact) root.classList.remove('logo-big');
   root.classList.remove('intro-lock');
 }
 
-/* ---------------------------------------------------------------- boot */
+/* Boot */
 async function boot() {
   buildLogo();
 
   const saved = store.get('jchh-lang');
   const guess = (navigator.language || 'en').slice(0, 2);
 
-  applyLang(
-    saved || (LANGS.includes(guess) ? guess : 'en'),
-    { persist: false }
-  );
+  applyLang(saved || (LANGS.includes(guess) ? guess : 'en'), {
+    persist: false
+  });
 
   $$('.langs button').forEach((b) => {
     b.addEventListener('click', () => applyLang(b.dataset.lang));
@@ -552,7 +550,6 @@ async function boot() {
   initCursor();
 
   const route = parse(location.pathname);
-
   await intro(route);
 
   ready = true;
